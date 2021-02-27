@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Lumen\Routing\Controller as BaseController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AuthController extends BaseController
 {
@@ -19,7 +20,7 @@ class AuthController extends BaseController
         ]);
 
         $user = new User([
-            'name' => $request->name,
+            'name'  => $request->name,
             'email' => $request->email
         ]);
 
@@ -27,7 +28,7 @@ class AuthController extends BaseController
 
         $user->save();
 
-        return response()->json(['data' => $user, 'message' => 'Successfully registered.'], 201);
+        return response()->json(['data' => $user, 'message' => 'Cadastro realizado com sucesso!'], 201);
     }
 
     public function login(Request $request)
@@ -40,7 +41,7 @@ class AuthController extends BaseController
         $credentials = $request->only(['email', 'password']);
 
         if (!$token = Auth::attempt($credentials))
-            return response()->json(['message' => 'Unauthorized'], 401);
+            throw new BadRequestHttpException('Credenciais incorretas.');
 
         return response()->json([
             'token' => $token,

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\BaseService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -17,7 +18,7 @@ class Controller extends BaseController
         $this->serviceInstance = $serviceInstance;
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
         $this->validate($this->request, $this->rules(), $this->messages());
 
@@ -31,7 +32,7 @@ class Controller extends BaseController
         return response()->json($response);
     }
 
-    public function show($id)
+    public function show($id): JsonResponse
     {
         // if ($this->request->user())
         //     $this->authorize('get', $this->serviceInstance->getModel()->findOrFail($id));
@@ -41,7 +42,7 @@ class Controller extends BaseController
         return response()->json($data);
     }
 
-    public function store()
+    public function store(): JsonResponse
     {
         // $this->authorize('insert', $this->serviceInstance->getModel()->fill($this->request->all()));
 
@@ -50,12 +51,12 @@ class Controller extends BaseController
         $stored = $this->serviceInstance->create($this->request->all());
 
         return response()->json([
-            'message' => "Created successfully!",
+            'message' => "Criado com sucesso!",
             'data' => $stored
         ], 201);
     }
 
-    public function update($id)
+    public function update($id): JsonResponse
     {
         // $this->authorize('update', $this->serviceInstance->getModel()->findOrFail($id));
 
@@ -64,28 +65,28 @@ class Controller extends BaseController
         $obj = $this->serviceInstance->update($id, $this->request->all());
 
         return response()->json([
-            'message' => "Updated successfully!",
+            'message' => "Atualizado com sucesso!",
             'data' => $obj
         ]);
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         // $this->authorize('delete', $this->serviceInstance->getModel()->findOrFail($id));
 
         $this->serviceInstance->remove($id, $this->request->all());
 
         return response()->json([
-            'message' => "Deleted successfully!"
+            'message' => "Deletado com sucesso!"
         ]);
     }
 
-    protected function rules($resourceId = null)
+    protected function rules($resourceId = null): array
     {
         return [];
     }
 
-    protected function messages()
+    protected function messages(): array
     {
         return [];
     }

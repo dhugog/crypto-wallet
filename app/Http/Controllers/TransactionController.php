@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\DepositConfirmation;
 use App\Services\TransactionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -31,22 +32,24 @@ class TransactionController extends BaseController
             'amount' => 'required|numeric|min:1'
         ]);
 
-        $this->transactionService->create([
+        $transaction = $this->transactionService->create([
             'user_id'           => $this->request->user()->id,
             'credited_currency' => 'BRL',
             'credited_amount'   => $this->request->amount
         ]);
 
+        $this->request->user()->notify(new DepositConfirmation($transaction));
+
         return response()->json([
-            'message' => 'Deposited successfully!',
-            'balance' => $this->transactionService->getUserBalance($this->request->user(), 'BRL')
+            'message' => 'Depósito realizado com sucesso!',
+            'balance' => $this->transactionService->getBalance('BRL')
         ]);
     }
 
     public function balance($currency): JsonResponse
     {
         return response()->json([
-            'balance' => $this->transactionService->getUserBalance($this->request->user(), $currency)
+            'balance' => $this->transactionService->getBalance($currency)
         ]);
     }
 }

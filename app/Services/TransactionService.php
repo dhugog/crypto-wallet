@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Transaction;
-use App\Models\User;
 
 class TransactionService
 {
@@ -24,8 +23,10 @@ class TransactionService
         return $transaction;
     }
 
-    public function getUserBalance(User $user, string $currency)
+    public function getBalance(string $currency)
     {
+        $user = auth()->user();
+
         return $user->transactions()->where('credited_currency', $currency)->sum('credited_amount') - $user->transactions()->where('debited_currency', $currency)->sum('debited_amount');
     }
 }

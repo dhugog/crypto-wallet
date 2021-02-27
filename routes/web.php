@@ -23,7 +23,7 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     });
 
     $router->group(['middleware' => 'auth'], function ($router) {
-        $router->post('deposit',            'TransactionController@deposit');
-        $router->get('{currency}/balance',  'TransactionController@balance');
+        $router->post('deposit',           'TransactionController@deposit');
+        $router->get('{currency}/balance', 'TransactionController@balance');
     });
 });
