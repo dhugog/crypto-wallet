@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
+use App\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
 {
     /**
      * The attributes that are not mass assignable.
-     *
-     * @var array
      */
     protected $guarded = [
         'id',
@@ -23,8 +22,6 @@ class BaseModel extends Model
 
     /**
      * The attributes that should be mutated to dates.
-     *
-     * @var array
      */
     protected $dates = [
         'created_at',
@@ -34,10 +31,8 @@ class BaseModel extends Model
 
     /**
      * The attributes that can be searched for.
-     *
-     * @var array
      */
-    protected $searchable = [
+    protected array $searchable = [
         'id' => [
             'operator' => '='
         ]
@@ -45,22 +40,20 @@ class BaseModel extends Model
 
     /**
      * Indicates if the model should be timestamped.
-     *
-     * @var bool
      */
     public $timestamps = true;
 
-    public function getSearchable()
+    public function getSearchable(): array
     {
         return $this->searchable;
     }
 
-    public function newEloquentBuilder($query)
+    public function newEloquentBuilder($query): Builder
     {
-        return new \App\Database\Eloquent\Builder($query);
+        return new Builder($query);
     }
 
-    public function hasRelation($relation)
+    public function hasRelation($relation): bool
     {
         return method_exists($this, $relation);
     }

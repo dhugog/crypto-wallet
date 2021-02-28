@@ -2,23 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Notifications\DepositConfirmation;
+use App\Notifications\TransactionConfirmation;
 use App\Services\TransactionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-class TransactionController extends BaseController
+class UserController extends BaseController
 {
-    /**
-     * @var Request
-     */
-    private $request;
-
-    /**
-     * @var TransactionService
-     */
-    private $transactionService;
+    private Request $request;
+    private TransactionService $transactionService;
 
     public function __construct(Request $request, TransactionService $transactionService)
     {
@@ -33,12 +26,13 @@ class TransactionController extends BaseController
         ]);
 
         $transaction = $this->transactionService->create([
-            'user_id'           => $this->request->user()->id,
             'credited_currency' => 'BRL',
             'credited_amount'   => $this->request->amount
         ]);
 
-        $this->request->user()->notify(new DepositConfirmation($transaction));
+        $amount = number_format($this->transaction->credited_amount / 100, 2, ',', '.');
+
+        $this->request->user()->notify(new TransactionConfirmation($transaction, "Depósito efetuado com sucesso!", "Seu depósito no valor de **R$ {$amount}** foi efetuado com sucesso!"));
 
         return response()->json([
             'message' => 'Depósito realizado com sucesso!',

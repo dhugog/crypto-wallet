@@ -17,9 +17,9 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('credited_currency', ['BRL', 'BTC'])->nullable();
-            $table->float('credited_amount')->nullable();
+            $table->bigInteger('credited_amount')->unsigned()->nullable();
             $table->enum('debited_currency', ['BRL', 'BTC'])->nullable();
-            $table->float('debited_amount')->nullable();
+            $table->bigInteger('debited_amount')->unsigned()->nullable();
             $table->timestamps();
         });
     }

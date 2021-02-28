@@ -9,23 +9,19 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class DepositConfirmation extends Notification implements ShouldQueue
+class TransactionConfirmation extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * @var Transaction
-     */
-    private $transaction;
+    private Transaction $transaction;
+    private string $subject;
+    private string $text;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
-    public function __construct(Transaction $transaction)
+    public function __construct(Transaction $transaction, string $subject, string $text)
     {
         $this->transaction = $transaction;
+        $this->subject = $subject;
+        $this->text = $text;
     }
 
     /**
@@ -48,17 +44,18 @@ class DepositConfirmation extends Notification implements ShouldQueue
     public function toMail($notifiable): MailMessage
     {
         $currentDate = Carbon::now()->format('d/m/Y à\s H:i');
-        $amount = number_format($this->transaction->credited_amount, 2, ',', '.');
 
         return (new MailMessage)
-            ->subject('Depósito efetuado com sucesso!')
+            ->subject($this->subject)
             ->greeting('Olá, ' . explode(" ", $notifiable->name)[0] . '!')
-            ->line("Seu depósito no valor de **R$ {$amount}** foi efetuado com sucesso!")
+            ->line($this->text)
             ->line($currentDate);
     }
 
     public function toDatabase()
     {
-        return $this->transaction->toArray();
+        return [
+            'transaction_id' => $this->transaction->id
+        ];
     }
 }

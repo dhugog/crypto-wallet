@@ -4,21 +4,16 @@ namespace App\Services;
 
 use App\Models\Transaction;
 
-class TransactionService
+class TransactionService extends BaseService
 {
-    /**
-     * @var Transaction
-     */
-    private $transactionModel;
-
     public function __construct(Transaction $transactionModel)
     {
-        $this->transactionModel = $transactionModel;
+        parent::__construct($transactionModel);
     }
 
     public function create(array $data): Transaction
     {
-        $transaction = $this->transactionModel->create($data);
+        $transaction = auth()->user()->transactions()->create($data);
 
         return $transaction;
     }
@@ -26,7 +21,7 @@ class TransactionService
     public function getBalance(string $currency)
     {
         $user = auth()->user();
-
+        
         return $user->transactions()->where('credited_currency', $currency)->sum('credited_amount') - $user->transactions()->where('debited_currency', $currency)->sum('debited_amount');
     }
 }

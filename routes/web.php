@@ -23,7 +23,13 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     });
 
     $router->group(['middleware' => 'auth'], function ($router) {
-        $router->post('deposit',           'TransactionController@deposit');
-        $router->get('{currency}/balance', 'TransactionController@balance');
+        $router->post('deposit',           'UserController@deposit');
+        $router->get('{currency}/balance', 'UserController@balance');
+
+        $router->group(['prefix' => 'crypto/{currency}'], function ($router) {
+            $router->get('price',     'CryptoController@getPrice');
+            $router->post('{action}', 'CryptoController@transact');
+            $router->get('position',  'CryptoController@getPosition');
+        });
     });
 });
