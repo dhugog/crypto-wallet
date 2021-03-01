@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Currency;
 use App\Notifications\TransactionConfirmation;
 use App\Services\CryptoService;
 use App\Services\TransactionService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -27,7 +29,7 @@ class CryptoController extends BaseController
 
     public function getPrice(string $currency): JsonResponse
     {
-        if ($currency !== 'BTC')
+        if (!Currency::find($currency))
             throw new NotFoundHttpException("Currency $currency not found.");
 
         $price = $this->cryptoService->getPrice();
@@ -37,7 +39,7 @@ class CryptoController extends BaseController
 
     public function getPosition(string $currency): JsonResponse
     {
-        if ($currency !== 'BTC')
+        if (!Currency::find($currency))
             throw new NotFoundHttpException("Currency $currency not found.");
 
         $position = $this->cryptoService->getPosition($currency);
@@ -50,7 +52,7 @@ class CryptoController extends BaseController
         if (!in_array($action, ['purchase', 'sell']))
             throw new NotFoundHttpException();
 
-        if ($currency !== 'BTC')
+        if (!Currency::find($currency))
             throw new NotFoundHttpException("Currency $currency not found.");
 
         $this->validate($this->request, [
@@ -59,8 +61,10 @@ class CryptoController extends BaseController
 
         $transaction = $this->cryptoService->{$action}($currency, $this->request->amount);
 
+        $cryptoCurrency = Currency::find($currency);
+
         $amount = number_format($transaction->{$action === 'purchase' ? 'debited_amount' : 'credited_amount'} / 100, 2, ',', '.');
-        $cryptoAmount = number_format($transaction->{$action === 'purchase' ? 'credited_amount' : 'debited_amount'} / 100000000, 8, ',', '.');
+        $cryptoAmount = number_format($transaction->{$action === 'purchase' ? 'credited_amount' : 'debited_amount'} / $cryptoCurrency->int_unit_multiplier, 8, ',', '.');
 
         $actionText = $action === 'purchase' ? "Compra" : "Venda";
         $message = "$actionText efetuada com sucesso!";
@@ -71,5 +75,25 @@ class CryptoController extends BaseController
             'message' => $message,
             'balance' => $this->transactionService->getBalance($currency)
         ]);
+    }
+
+    public function getTransactedVolume(string $currency): JsonResponse
+    {
+        if (!Currency::find($currency))
+            throw new NotFoundHttpException("Currency $currency not found.");
+
+        $volume = $this->cryptoService->getTransactedVolume($currency);
+
+        return response()->json($volume);
+    }
+
+    public function getPriceHistory(string $currency): JsonResponse
+    {
+        if (!Currency::find($currency))
+            throw new NotFoundHttpException("Currency $currency not found.");
+
+        $history = $this->cryptoService->getPriceHistory($currency);
+
+        return response()->json($history);
     }
 }

@@ -30,7 +30,7 @@ class UserController extends BaseController
             'credited_amount'   => $this->request->amount
         ]);
 
-        $amount = number_format($this->transaction->credited_amount / 100, 2, ',', '.');
+        $amount = number_format($transaction->credited_amount / 100, 2, ',', '.');
 
         $this->request->user()->notify(new TransactionConfirmation($transaction, "Depósito efetuado com sucesso!", "Seu depósito no valor de **R$ {$amount}** foi efetuado com sucesso!"));
 
@@ -45,5 +45,17 @@ class UserController extends BaseController
         return response()->json([
             'balance' => $this->transactionService->getBalance($currency)
         ]);
+    }
+
+    public function getStatement(): JsonResponse
+    {
+        $this->validate($this->request, [
+            'from' => 'filled|date',
+            'to'   => 'filled|date'
+        ]);
+
+        $transactions = $this->transactionService->getStatement($this->request->from, $this->request->to);
+
+        return response()->json($transactions);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Transaction extends BaseModel
 {
@@ -16,6 +15,11 @@ class Transaction extends BaseModel
         'credited_amount',
         'debited_currency',
         'debited_amount'
+    ];
+
+    protected $hidden = [
+        'user_id',
+        'updated_at'
     ];
 
     protected array $searchable = [

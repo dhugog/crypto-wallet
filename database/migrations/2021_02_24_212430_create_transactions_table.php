@@ -16,11 +16,14 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('credited_currency', ['BRL', 'BTC'])->nullable();
+            $table->char('credited_currency', 3)->nullable();
             $table->bigInteger('credited_amount')->unsigned()->nullable();
-            $table->enum('debited_currency', ['BRL', 'BTC'])->nullable();
+            $table->char('debited_currency', 3)->nullable();
             $table->bigInteger('debited_amount')->unsigned()->nullable();
             $table->timestamps();
+
+            $table->foreign('credited_currency')->references('code')->on('currencies');
+            $table->foreign('debited_currency')->references('code')->on('currencies');
         });
     }
 

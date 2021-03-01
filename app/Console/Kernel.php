@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Models\CryptoPrice;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -13,7 +15,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        \App\Console\Commands\StoreCryptoPrice::class
     ];
 
     /**
@@ -24,6 +26,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //
+        $schedule->command('crypto:store-price')->everyTenMinutes();
+
+        $schedule->call(fn () => CryptoPrice::whereDate('created_at', '<', Carbon::now()->subDays(90)->toDateString())->delete())->daily();
     }
 }

@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\CryptoPrice;
+use App\Models\Currency;
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -20,9 +23,11 @@ class CryptoService
     {
         $response = Http::get('https://www.mercadobitcoin.net/api/BTC/ticker')->throw();
 
+        $currency = Currency::find($currency);
+
         return [
-            'buy'  => (int) $response['ticker']['buy'] * 100 / 100000000, // Centavos / satoshi
-            'sell' => (int) $response['ticker']['sell'] * 100 / 100000000
+            'buy'  => (int) $response['ticker']['buy'] * 100 / $currency->int_unit_multiplier, // Centavos / satoshi
+            'sell' => (int) $response['ticker']['sell'] * 100 / $currency->int_unit_multiplier
         ];
     }
 
@@ -104,5 +109,22 @@ class CryptoService
         }
 
         return $positions;
+    }
+
+    public function getTransactedVolume(string $currency): array
+    {
+        $transactionModel = $this->transactionService->getModel();
+
+        $getSum = fn (string $action): int => $transactionModel->where("{$action}_currency", $currency)->whereDate('created_at', Carbon::now()->toDateString())->sum("{$action}_amount");
+
+        return [
+            'purchased' => $getSum('credited'),
+            'sold'      => $getSum('debited')
+        ];
+    }
+
+    public function getPriceHistory(string $currency): array
+    {
+        return CryptoPrice::where('cryptocurrency', $currency)->where('created_at', '>=', Carbon::now()->subHours(24)->toDateTimeString())->get()->toArray();
     }
 }
