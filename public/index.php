@@ -25,4 +25,6 @@ $app = require __DIR__.'/../bootstrap/app.php';
 |
 */
 
+define('LUMEN_START', microtime(true));
+
 $app->run();

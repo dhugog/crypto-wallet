@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -43,10 +44,20 @@ class AuthController extends BaseController
         if (!$token = Auth::attempt($credentials))
             throw new BadRequestHttpException('Credenciais incorretas.');
 
+        $this->respondWithToken($token);
+    }
+
+    public function refresh(): JsonResponse
+    {
+        return $this->respondWithToken(Auth::refresh());
+    }
+
+    protected function respondWithToken(string $token): JsonResponse
+    {
         return response()->json([
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60
+            'access_token' => $token,
+            'token_type'   => 'Bearer',
+            'expires_in'   => Auth::factory()->getTTL() * 60
         ]);
     }
 }

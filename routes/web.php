@@ -20,6 +20,7 @@ $router->group(['prefix' => 'v1'], function () use ($router) {
     $router->group(['prefix' => 'auth'], function () use ($router) {
         $router->post('register', 'AuthController@register');
         $router->post('login',    'AuthController@login');
+        $router->post('refresh',  'AuthController@refresh');
     });
 
     $router->group(['middleware' => 'auth'], function ($router) {
