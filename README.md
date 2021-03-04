@@ -1,4 +1,4 @@
-# Crypto Wallet - API de investimentos em criptomoedas
+# Crypto Wallet - API para investimentos em criptomoedas
 
 **Tecnologias utilizadas:** Lumen 7.2, MariaDB 10.5.9
 
@@ -41,7 +41,8 @@ services:
 
 ### Documentação
 
-A documentação da API poderá ser encontrada [aqui](https://documenter.getpostman.com/view/4348568/Tz5iA1Ln)
-E o link para a collection no postman [aqui](https://www.getpostman.com/collections/017f993e22e02de18292)
+A documentação da API poderá ser encontrada <a href="https://documenter.getpostman.com/view/4348568/Tz5iA1Ln" target="_blank">aqui</a>
+
+E o link para a collection no postman <a href="https://www.getpostman.com/collections/017f993e22e02de18292" target="_blank">aqui</a>
 
 **Observação:** Por questões de precisão, todos valores monetários são armazenados em sua unidade minima/inteira. Ex.: _**R$ 1,50 = 150 centavos**_, _**0,05 BTC = 5.000.000 satoshis**_. Consequentemente, os valores obtidos na API para consulta de preço do Bitcoin, são em centavos por satoshi.
