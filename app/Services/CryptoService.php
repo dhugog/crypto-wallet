@@ -21,9 +21,9 @@ class CryptoService
 
     public function getPrice($currency = 'BTC')
     {
-        $response = Http::get('https://www.mercadobitcoin.net/api/BTC/ticker')->throw();
-
         $currency = Currency::find($currency);
+
+        $response = Http::get($currency->price_api_url)->throw();
 
         return [
             'buy'  => (int) $response['ticker']['buy'] * 100 / $currency->int_unit_multiplier, // Centavos / satoshi

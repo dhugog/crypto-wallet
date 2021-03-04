@@ -20,4 +20,9 @@ class CryptoPrice extends BaseModel
         'currency',
         'updated_at'
     ];
+
+    protected $casts = [
+        'buy' => 'float',
+        'sell' => 'float'
+    ];
 }

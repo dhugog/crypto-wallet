@@ -6,12 +6,9 @@ use App\Models\Currency;
 use App\Notifications\TransactionConfirmation;
 use App\Services\CryptoService;
 use App\Services\TransactionService;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Laravel\Lumen\Routing\Controller as BaseController;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CryptoController extends BaseController

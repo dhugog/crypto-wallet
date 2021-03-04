@@ -12,6 +12,7 @@ class Currency extends BaseModel
     protected $fillable = [
         'code',
         'crypto',
-        'int_unit_multiplier'
+        'int_unit_multiplier',
+        'price_api_url'
     ];
 }

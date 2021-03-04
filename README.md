@@ -1,24 +1,47 @@
-# Lumen PHP Framework
+# Crypto Wallet - API de investimentos em criptomoedas
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/laravel/lumen-framework)
+**Tecnologias utilizadas:** Lumen 7.2, MariaDB 10.5.9
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+### Setup
 
-## Official Documentation
+- Execute o comando `docker-compose up -d` na pasta anterior à do projeto clonado, onde deverá se encontrar o arquivo [docker-compose.yml](#docker-compose)
+- Na pasta do projeto, copie e cole o arquivo `.env.example`, renomeando-o para `.env`, e verificando as configurações como banco de dados e servidor SMTP
+- Dentro do container, execute o comando `composer install`
+- Ainda no container, execute o comando `php artisan migrate`, para realizar a migração das tabelas ao banco de dados, e em seguida, `php artisan db:seed`
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+Após isso, a aplicação estará sendo servida na porta especificada no docker-compose (padrão 8080), do localhost.
 
-## Contributing
+<a name="docker-compose"></a>
+**docker-compose.yml**
+```yml
+version: '3.7'
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+services:
+  mariadb:
+    image: mariadb
+    container_name: crypto_wallet-db
+    volumes:
+      - ./db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=crypto_wallet
+      - MYSQL_DATABASE=crypto_wallet
 
-## Security Vulnerabilities
+  app:
+    build: ./crypto-wallet
+    container_name: crypto_wallet-api
+    volumes:
+      - ./crypto-wallet:/var/www/app
+    ports:
+      - "8080:8080"
+    links:
+      - mariadb
+```
 
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+### Documentação
 
-## License
+A documentação da API poderá ser encontrada [aqui](https://documenter.getpostman.com/view/4348568/Tz5iA1Ln)
+E o link para a collection no postman [aqui](https://www.getpostman.com/collections/017f993e22e02de18292)
 
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Observação:** Por questões de precisão, todos valores monetários são armazenados em sua unidade minima/inteira. Ex.: _**R$ 1,50 = 150 centavos**_, _**0,05 BTC = 5.000.000 satoshis**_. Consequentemente, os valores obtidos na API para consulta de preço do Bitcoin, são em centavos por satoshi.

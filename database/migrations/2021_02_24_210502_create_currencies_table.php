@@ -17,6 +17,7 @@ class CreateCurrenciesTable extends Migration
             $table->char('code', 3)->primary();
             $table->boolean('crypto');
             $table->integer('int_unit_multiplier')->nullable()->comment('Multiplier that must be applied to result in an integer value.');
+            $table->string('price_api_url')->nullable();
             $table->timestamps();
         });
     }

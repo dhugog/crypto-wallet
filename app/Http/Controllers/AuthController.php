@@ -29,7 +29,7 @@ class AuthController extends BaseController
 
         $user->save();
 
-        return response()->json(['data' => $user, 'message' => 'Cadastro realizado com sucesso!'], 201);
+        return response()->json(['message' => 'Cadastro realizado com sucesso!'], 201);
     }
 
     public function login(Request $request)
@@ -44,7 +44,7 @@ class AuthController extends BaseController
         if (!$token = Auth::attempt($credentials))
             throw new BadRequestHttpException('Credenciais incorretas.');
 
-        $this->respondWithToken($token);
+        return $this->respondWithToken($token);
     }
 
     public function refresh(): JsonResponse

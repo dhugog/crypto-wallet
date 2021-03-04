@@ -18,12 +18,14 @@ class CurrenciesTableSeeder extends Seeder
                 'code' => 'BRL',
                 'crypto' => false,
                 'int_unit_multiplier' => 100,
+                'price_api_url' => null,
                 'created_at' => Carbon::now()
             ],
             [
                 'code' => 'BTC',
                 'crypto' => true,
                 'int_unit_multiplier' => 100000000,
+                'price_api_url' => 'https://www.mercadobitcoin.net/api/BTC/ticker/',
                 'created_at' => Carbon::now()
             ]
         ]);
