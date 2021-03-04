@@ -6,6 +6,9 @@ sudo ln -s /etc/nginx/sites/$FRAMEWORK.conf /etc/nginx/sites/enabled.conf
 # Starts FPM
 nohup /usr/sbin/php-fpm -y /etc/php7/php-fpm.conf -F -O 2>&1 &
 
+composer install
+php artisan migrate --seed
+
 # Starts Cron
 sudo /usr/sbin/crond -l 8
 

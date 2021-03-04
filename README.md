@@ -4,10 +4,8 @@
 
 ### Setup
 
+- Na pasta do projeto clonado, copie e cole o arquivo `.env.example`, renomeando-o para `.env`, e verificando as configurações como banco de dados e servidor SMTP
 - Execute o comando `docker-compose up -d` na pasta anterior à do projeto clonado, onde deverá se encontrar o arquivo [docker-compose.yml](#docker-compose)
-- Na pasta do projeto, copie e cole o arquivo `.env.example`, renomeando-o para `.env`, e verificando as configurações como banco de dados e servidor SMTP
-- Dentro do container, execute o comando `composer install`
-- Ainda no container, execute o comando `php artisan migrate`, para realizar a migração das tabelas ao banco de dados, e em seguida, `php artisan db:seed`
 
 Após isso, a aplicação estará sendo servida na porta especificada no docker-compose (padrão 8080), do localhost.
 
